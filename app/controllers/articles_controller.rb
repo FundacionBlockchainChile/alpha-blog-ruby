@@ -3,38 +3,32 @@ class ArticlesController < ApplicationController
   before_action :require_user, except: [:show, :index]
   before_action :require_same_user, only: [:edit, :update, :destroy]
 
-  # GET /articles or /articles.json
+  def show
+  end
+
   def index
     @articles = Article.paginate(page: params[:page], per_page: 5)
   end
 
-  # GET /articles/1 or /articles/1.json
-  def show
-  end
-
-  # GET /articles/new
   def new
     @article = Article.new
   end
 
-  # GET /articles/1/edit
   def edit
   end
 
-  # POST /articles or /articles.json
   def create
     @article = Article.new(article_params)
     @article.user = current_user
     if @article.save
       flash[:notice] = "Article was created successfully."
-      redirect_to @article 
+      redirect_to @article
     else
       render 'new'
     end
   end
 
-  # PATCH/PUT /articles/1 or /articles/1.json
-   def update
+  def update
     if @article.update(article_params)
       flash[:notice] = "Article was updated successfully."
       redirect_to @article
@@ -44,7 +38,6 @@ class ArticlesController < ApplicationController
   end
 
   def destroy
-    @article = Article.find(params[:id])
     @article.destroy
     redirect_to articles_path
   end
@@ -52,11 +45,11 @@ class ArticlesController < ApplicationController
   private
 
   def set_article
-  @article = Article.find(params[:id])
+    @article = Article.find(params[:id])
   end
 
   def article_params
-    params.require(:article).permit(:title, :description)
+    params.require(:article).permit(:title, :description, category_ids: [])
   end
 
   def require_same_user
